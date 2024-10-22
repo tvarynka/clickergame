@@ -19,6 +19,7 @@ const gift = ref(null);
 const prize = ref(0);
 const message = ref('');
 const messageElement = ref(null);
+const type = ref('');
 
 const emit = defineEmits(['click']);
 
@@ -29,6 +30,8 @@ const props = defineProps({
   }
 });
 
+const types = ['money', 'autoClickBonus', 'clickBonus'];
+
 onMounted(() => {
   setInterval(() => {
     const left = Math.random() * (document.documentElement.clientWidth - 200);
@@ -37,19 +40,19 @@ onMounted(() => {
     gift.value.style.left = left + 'px';
     gift.value.style.top = top + 'px';
     gift.value.style.display = 'flex';
-    prize.value = Math.floor(Math.random() * (props.currentBank < 10 ? 10 : props.currentBank) / 2);
+
+    generatePrize();
 
     setTimeout(() => {
       gift.value.style.display = 'none';
     }, 10000);
-  }, 50000);
+  }, 20000);
 });
 
 function clickHandler(e) {
   gift.value.style.display = 'none';
-  emit('click', prize.value);
+  emit('click', type.value, prize.value);
 
-  message.value = `Ви одержали +${prize.value}`;
   messageElement.value.style.left = e.pageX + 'px';
   messageElement.value.style.top = e.pageY + 'px';
   messageElement.value.style.display = 'block';
@@ -57,6 +60,21 @@ function clickHandler(e) {
   setTimeout(() => {
       messageElement.value.style.display = 'none';
     }, 2000);
+}
+
+function generatePrize() {
+  type.value = types[Math.floor(Math.random() * (types.length - 1))];
+
+  if (type.value === 'money') {
+    prize.value = Math.floor(Math.random() * (props.currentBank < 10 ? 10 : props.currentBank) / 2);
+    message.value = `Ви одержали +${prize.value} в банк`;
+  } else if (type.value === 'autoClickBonus') {
+    prize.value = Math.max(Math.floor(Math.random() * 3), 1.2);
+    message.value = `Ви одержали x${prize.value} до автокліку на 30 секунд`;
+  } if (type.value === 'clickBonus') {
+    prize.value = Math.max(Math.floor(Math.random() * 10), 1.2);
+    message.value = `Ви одержали x${prize.value} до кліку на 30 секунд`;
+  }
 }
 </script>
 

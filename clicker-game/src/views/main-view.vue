@@ -1,11 +1,19 @@
 <template>
   <div class="main">
     <div class="bank">
+      <TimerComponent
+        v-if="timer > 0"
+        :time="timer"
+        :type="prizeType"
+        :prize="prizeValue"
+      />
       <BankComponent :count="bank" />
       <MainClicker @click="updateBank" :click-value="clickIncrement" />
       <StatisticsView
         :total-bank="totalBank"
         :total-clicks="totalClicks"
+        :click-value="clickIncrement"
+        :autoclick-value="autoClickIncrement"
       />
     </div>
 
@@ -40,6 +48,7 @@ import BasicUpgrade from '@/components/basic-upgrade.vue';
 import RandomGift from '@/components/random-gift.vue';
 import AchievementsContainer from './achievements/achievements-container.vue';
 import StatisticsView from './statistics-view.vue';
+import TimerComponent from '@/components/timer-component.vue';
 
 const bank = ref(0);
 const totalBank = ref(0);
@@ -72,6 +81,11 @@ const upgrades = ref([
     multiplier: 2,
   }
 ]);
+const autoclickBonusIncrement = ref(1);
+const clickBonusIncrement = ref(1);
+const timer = ref(0);
+const prizeValue = ref(0);
+const prizeType = ref('');
 
 const clickIncrement = computed(() => {
   let increment = 1;
@@ -82,7 +96,9 @@ const clickIncrement = computed(() => {
     }
   }
 
-  return increment;
+  increment = increment * clickBonusIncrement.value;
+
+  return Math.floor(increment);
 });
 
 const autoClickIncrement = computed(() => {
@@ -94,7 +110,9 @@ const autoClickIncrement = computed(() => {
     }
   }
 
-  return increment;
+  increment = increment * autoclickBonusIncrement.value;
+
+  return Math.floor(increment);
 });
 
 function updateBank() {
@@ -118,9 +136,29 @@ function updateUpgrade(name) {
   upgrades.value[upgradeIndex] = upgrade;
 }
 
-function prizeClickHandler(prize) {
-  bank.value += prize;
-  totalBank.value += prize;
+function prizeClickHandler(type, prize) {
+  prizeValue.value =  prize;
+  prizeType.value = type;
+  if (type === 'money') {
+    bank.value += prize;
+    totalBank.value += prize;
+  } else if (type === 'autoClickBonus') {
+    autoclickBonusIncrement.value = prize;
+    timer.value = 30;
+
+    setTimeout(() => {
+      autoclickBonusIncrement.value = 1;
+      timer.value = 0;
+    }, 30000);
+  } if (type === 'clickBonus') {
+    clickBonusIncrement.value = prize;
+    timer.value = 30;
+
+    setTimeout(() => {
+      clickBonusIncrement.value = 1;
+      timer.value = 0;
+    }, 30000);
+  }
 }
 
 onMounted(() => {
