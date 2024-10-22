@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
-    <button ref="button" class="main-clicker" @click="animateClickValue">
-      CLICK ME
-    </button>
+    <div ref="button" class="main-clicker" @click="animateClickValue">
+      <img src="../assets/images/coin.svg" />
+    </div>
   </div>
 </template>
 
@@ -30,22 +30,21 @@ function animateClickValue() {
 <style scoped>
   .wrapper {
     height: 200px;
-    width: 200px;
+    width: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
   .main-clicker {
-    width: 100px;
-    height: 50px;
+    width: 150px;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    background: #15d699;
-    font-size: 12px;
     position: relative;
+    border-radius: 50%;
   }
 
   .main-clicker:active {
@@ -71,14 +70,16 @@ function animateClickValue() {
 }
 
 @keyframes myAnimation {
-  from {
+  0% {
     opacity: 1;
     bottom: 20px;
+    left: 30px;
   }
 
-  to {
+  100% {
     opacity: 0;
     bottom: 100px;
+    left: random(150);
   }
 }
 </style>

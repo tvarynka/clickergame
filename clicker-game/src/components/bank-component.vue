@@ -14,7 +14,6 @@ defineProps({
 
 <style scoped>
 .counter {
-  width: 200px;
   font-size: 40px;
   color: blue;
   margin: 30px 0;

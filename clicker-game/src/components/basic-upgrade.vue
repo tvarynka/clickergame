@@ -48,16 +48,15 @@ defineProps({
 
 <style scoped>
 .wrapper {
-  width: 250px;
-  height: 50px;
+  width: 350px;
   position: relative;
 }
 
 .basic-upgrade {
   display: flex;
   justify-content: space-between;
-  width: 250px;
-  height: 50px;
+  width: 350px;
+  height: 70px;
   align-items: center;
   position: relative;
   z-index: 1;
