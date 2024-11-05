@@ -109,7 +109,7 @@ function updateUpgrade(name) {
 
   bank.value -= upgrade.price;
   upgrade.amount++;
-  upgrade.price += Math.floor(upgrade.amount * upgrade.priceIncreaseMultiplier);
+  upgrade.price *= upgrade.priceIncreaseMultiplier;
 
   upgrades.value[upgradeIndex] = upgrade;
 }
