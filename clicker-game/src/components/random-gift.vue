@@ -4,7 +4,6 @@
     class="gift"
     @click="clickHandler"
   >
-    <img src="../assets/images/coin.svg" />
   </div>
 
   <div ref="messageElement" class="message">
@@ -34,19 +33,21 @@ const types = ['money', 'autoClickBonus', 'clickBonus'];
 
 onMounted(() => {
   setInterval(() => {
-    const left = Math.random() * (document.documentElement.clientWidth - 200);
-    const top = Math.random() * (document.documentElement.clientHeight - 200);
+    const left = Math.random() * (document.documentElement.clientWidth - 400);
+    const top = Math.random() * (document.documentElement.clientHeight - 400);
 
+    gift.value.style.display = 'flex';
     gift.value.style.left = left + 'px';
     gift.value.style.top = top + 'px';
-    gift.value.style.display = 'flex';
 
     generatePrize();
 
     setTimeout(() => {
-      gift.value.style.display = 'none';
+      if (gift.value) {
+        gift.value.style.display = 'none';
+      }
     }, 10000);
-  }, 20000);
+  }, 60000);
 });
 
 function clickHandler(e) {
@@ -58,15 +59,15 @@ function clickHandler(e) {
   messageElement.value.style.display = 'block';
 
   setTimeout(() => {
-      messageElement.value.style.display = 'none';
-    }, 2000);
+    messageElement.value.style.display = 'none';
+  }, 2000);
 }
 
 function generatePrize() {
-  type.value = types[Math.floor(Math.random() * (types.length - 1))];
+  type.value = types[Math.round(Math.random() * (types.length - 1))];
 
   if (type.value === 'money') {
-    prize.value = Math.floor(Math.random() * (props.currentBank < 10 ? 10 : props.currentBank) / 2);
+    prize.value = Math.ceil(Math.random() * (props.currentBank < 10 ? 10 : props.currentBank) / 2);
     message.value = `Ви одержали +${prize.value} в банк`;
   } else if (type.value === 'autoClickBonus') {
     prize.value = Math.max(Math.floor(Math.random() * 3), 1.2);
@@ -89,6 +90,8 @@ function generatePrize() {
   position: absolute;
   display: none;
   z-index: 2;
+  background-image: url('../assets/images/coin.svg');
+  background-size: auto;
 }
 
 .message {
@@ -98,5 +101,6 @@ function generatePrize() {
   padding: 10px;
   border-radius: 10px;
   box-shadow: 1px 3px 45px -14px rgba(66, 68, 90, 1);
+  background-color: white;
 }
 </style>

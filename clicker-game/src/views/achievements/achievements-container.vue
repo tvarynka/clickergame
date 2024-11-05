@@ -7,8 +7,8 @@
       >
         <AchievementItem
           v-if="achievement.isAchieved"
+          :achievement="achievement"
         >
-          {{ achievement.name }}
         </AchievementItem>
       </template>
     </div>
@@ -16,14 +16,6 @@
 </template>
 
 <script setup>
-// за перший клік
-// 100 кліків
-// 10000 кліків
-// 100 монет в банку
-// 1000 монет в банку
-// 1000000 монет в банку
-// купити по 100 кожного покращення
-
 import { defineProps, computed } from 'vue';
 import AchievementItem from './achievement-item.vue';
 
@@ -33,6 +25,9 @@ const props = defineProps({
   },
   totalBank: {
     type: Number
+  },
+  upgrades: {
+    type: Array
   }
 });
 
@@ -40,11 +35,48 @@ const achievements = computed(() => [
   {
     name: 'Перший гріш',
     isAchieved: props.totalBank > 0,
+    description: 'Зароблено першу монетку',
+  },
+  {
+    name: 'Дзвенить у кишені',
+    isAchieved: props.bank > 100,
+    description: 'Маєш одночасно 100 монет в банку',
   },
   {
     name: 'Багач',
-    isAchieved: props.totalBank > 100,
-  }
+    isAchieved: props.totalBank > 10000,
+    description: 'Сумарно зароблено 10000 монет',
+  },
+  {
+    name: 'Мільйонер',
+    isAchieved: props.totalBank > 1000000,
+    description: 'Сумарно зароблено 1000000 монет',
+  },
+  {
+    name: 'Мільярдер',
+    isAchieved: props.totalBank > 1000000000,
+    description: 'Сумарно зароблено 1000000000 монет',
+  },
+  {
+    name: 'Набожний',
+    isAchieved: getUpgradeAmountByName('Церква') > 100,
+    description: 'Маєш 100 церков',
+  },
+  {
+    name: 'Better Call Мольфар',
+    isAchieved: getUpgradeAmountByName('Мольфар') > 1,
+    description: 'В селі тепер є мольфар',
+  },
+  {
+    name: 'Пан',
+    isAchieved: allAmountsAreBiggerThen(10),
+    description: 'Є по 10 кожного покращення',
+  },
+  {
+    name: 'Лорд',
+    isAchieved: allAmountsAreBiggerThen(100),
+    description: 'Є по 100 кожного покращення',
+  },
 ]);
 
 const achieved = computed(() => {
@@ -59,15 +91,20 @@ const achieved = computed(() => {
   return counter;
 });
 
+function getUpgradeAmountByName(upgradeName) {
+  const upgrade = props.upgrades.find((item) => item.name === upgradeName);
+
+  return upgrade ? upgrade.amount : 0;
+}
+
+function allAmountsAreBiggerThen(value) {
+  return props.upgrades.every(item => item.amount >= value);
+}
+
 </script>
 
 <style scoped>
 .container {
-  border: 3px solid;
   width: calc(100vw - 750px);
-}
-
-.achievements {
-  display: flex;
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
   <div class="wrapper">
     <div ref="button" class="main-clicker" @click="animateClickValue">
-      <img src="../assets/images/coin.svg" />
     </div>
   </div>
 </template>
@@ -19,7 +18,7 @@ function animateClickValue() {
   let clickValueElement = document.createElement('div');
   clickValueElement.textContent = '+' + props.clickValue;
   clickValueElement.classList.add('click-value');
-  clickValueElement.style.left = Math.random() * 80 + 'px';
+  clickValueElement.style.left = Math.random() * 130 + 'px';
   button.value.append(clickValueElement);
   setTimeout(() => {
     clickValueElement.remove();
@@ -45,13 +44,16 @@ function animateClickValue() {
     cursor: pointer;
     position: relative;
     border-radius: 50%;
+    background-image: url("../assets/images/coin.svg");
+    background-repeat: no-repeat;
+    background-size: auto;
+    transition: width 0.5s, height 0.5s;
   }
 
   .main-clicker:active {
-    background-color: #11ab7a;
-    width: 110px;
-    height: 55px;
-    font-size: 14px;
+    width: 180px;
+    height: 180px;
+    transition: width 0.5s, height 0.5s;
   }
 </style>
 
@@ -73,13 +75,13 @@ function animateClickValue() {
   0% {
     opacity: 1;
     bottom: 20px;
-    left: 30px;
+    left: random(130);
   }
 
   100% {
     opacity: 0;
     bottom: 100px;
-    left: random(150);
+    left: random(130);
   }
 }
 </style>

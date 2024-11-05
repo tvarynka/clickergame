@@ -1,5 +1,8 @@
 <template>
-  <div class="wrapper">
+  <div
+    v-if="!isHidden"
+    class="wrapper"
+  >
     <button class="basic-upgrade" :disabled="!available">
       <div class="name">
         {{ name }}
@@ -15,6 +18,24 @@
     </button>
     <div class="description">
       {{ description }}
+    </div>
+  </div>
+  <div
+    v-else
+    class="wrapper"
+  >
+    <button class="basic-upgrade" disabled>
+      <div class="name">
+        ???
+      </div>
+      <div class="right-column">
+        <div class="price">
+          Вартість: ???
+        </div>
+      </div>
+    </button>
+    <div class="description">
+      ???
     </div>
   </div>
 </template>
@@ -42,6 +63,10 @@ defineProps({
   available: {
     type: Boolean,
     default: false,
+  },
+  isHidden: {
+    type: Boolean,
+    default: true
   }
 });
 </script>
@@ -53,6 +78,7 @@ defineProps({
 }
 
 .basic-upgrade {
+  font-family: "Vollkorn SC", serif;
   display: flex;
   justify-content: space-between;
   width: 350px;
@@ -60,10 +86,11 @@ defineProps({
   align-items: center;
   position: relative;
   z-index: 1;
+  cursor: pointer;
 }
 
-.basic-upgrade.available {
-  cursor: pointer;
+.basic-upgrade:disabled {
+  cursor: auto;
 }
 
 .description {

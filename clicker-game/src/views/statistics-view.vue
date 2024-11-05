@@ -35,13 +35,8 @@ defineProps({
 </script>
 
 <style scoped>
-.statistics-container {
-  border: 1px solid;
-  height: 400px;
-}
-
 .stat {
   text-align: left;
-  margin: 5px;
+  margin: 5px 15px;
 }
 </style>

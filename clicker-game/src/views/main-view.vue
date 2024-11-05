@@ -1,12 +1,14 @@
 <template>
   <div class="main">
     <div class="bank">
-      <TimerComponent
-        v-if="timer > 0"
-        :time="timer"
-        :type="prizeType"
-        :prize="prizeValue"
-      />
+      <div class="timer-wrapper">
+        <TimerComponent
+            v-if="timer > 0"
+            :time="timer"
+            :type="prizeType"
+            :prize="prizeValue"
+        />
+      </div>
       <BankComponent :count="bank" />
       <MainClicker @click="updateBank" :click-value="clickIncrement" />
       <StatisticsView
@@ -20,6 +22,7 @@
     <AchievementsContainer
       :bank="bank"
       :total-bank="totalBank"
+      :upgrades="upgrades"
     />
 
     <div class="upgrades">
@@ -30,6 +33,7 @@
           :price="upgrade.price"
           :description="upgrade.description"
           :available="bank >= upgrade.price"
+          :is-hidden="upgrade.isHidden"
           @click="updateUpgrade(upgrade.name)"
         />
       </template>
@@ -49,38 +53,12 @@ import RandomGift from '@/components/random-gift.vue';
 import AchievementsContainer from './achievements/achievements-container.vue';
 import StatisticsView from './statistics-view.vue';
 import TimerComponent from '@/components/timer-component.vue';
+import { UPGRADES_LIST } from '@/data';
 
 const bank = ref(0);
 const totalBank = ref(0);
 const totalClicks = ref(0);
-const upgrades = ref([
-  {
-    name: 'Клік +1',
-    type: 'manual',
-    price: 1,
-    description: 'Додає +1 до вартості кліка',
-    amount: 0,
-    priceIncreaseMultiplier: 1.1,
-  },
-  {
-    name: 'Автоклік',
-    type: 'auto',
-    price: 10,
-    description: 'Автоматично клікає раз на секунду',
-    amount: 0,
-    priceIncreaseMultiplier: 1.2,
-    multiplier: 1,
-  },
-  {
-    name: 'Людина, що клікає',
-    type: 'auto',
-    price: 100,
-    description: 'Людина, що клікає замість тебе. Вдвічі швидша за автоклік.',
-    amount: 0,
-    priceIncreaseMultiplier: 1.2,
-    multiplier: 2,
-  }
-]);
+const upgrades = ref([]);
 const autoclickBonusIncrement = ref(1);
 const clickBonusIncrement = ref(1);
 const timer = ref(0);
@@ -161,10 +139,24 @@ function prizeClickHandler(type, prize) {
   }
 }
 
+function updateUpgradesVisibility() {
+  upgrades.value.forEach((upgrade, index) => {
+    if (upgrade.isHidden) {
+      if (upgrade.price <= totalBank.value) {
+        upgrades.value[index].isHidden = false;
+      }
+    }
+  });
+}
+
 onMounted(() => {
+  upgrades.value = UPGRADES_LIST;
+
   setInterval(() => {
     bank.value += autoClickIncrement.value;
     totalBank.value += autoClickIncrement.value;
+
+    updateUpgradesVisibility();
   }, 1000);
 });
 </script>
@@ -184,5 +176,11 @@ onMounted(() => {
 
   .upgrades {
     width: 350px;
+  }
+
+  .timer-wrapper {
+    height: 100px;
+    width: 400px;
+    position: relative;
   }
 </style>
