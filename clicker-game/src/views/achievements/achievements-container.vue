@@ -39,8 +39,8 @@ const achievements = computed(() => [
   },
   {
     name: 'Дзвенить у кишені',
-    isAchieved: props.bank > 100,
-    description: 'Маєш одночасно 100 монет в банку',
+    isAchieved: props.totalBank > 100,
+    description: 'Маєш 100 монет в банку',
   },
   {
     name: 'Багач',

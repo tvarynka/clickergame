@@ -109,7 +109,7 @@ function updateUpgrade(name) {
 
   bank.value -= upgrade.price;
   upgrade.amount++;
-  upgrade.price = Math.round(upgrade.price * upgrade.priceIncreaseMultiplier);
+  upgrade.price = Math.ceil((upgrade.price + upgrade.amount) * 1.2896685);
 
   upgrades.value[upgradeIndex] = upgrade;
 }
