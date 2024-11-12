@@ -17,9 +17,10 @@ body {
 #app {
   font-family: "Vollkorn SC", serif;
   text-align: center;
-  color: #2c3e50;
+  color: #422800;
   height: 100vh;
   width: 100vw;
   user-select: none;
+  background-color: #dfd9d3;
 }
 </style>

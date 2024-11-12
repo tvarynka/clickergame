@@ -10,7 +10,7 @@
         />
       </div>
       <BankComponent :count="bank" />
-      <MainClicker @click="updateBank" :click-value="clickIncrement" />
+      <MainClicker @click="updateBankOnClick" :click-value="clickIncrement" />
       <StatisticsView
         :total-bank="totalBank"
         :total-clicks="totalClicks"
@@ -66,7 +66,7 @@ const clickIncrement = computed(() => {
 
   for (let i = 0; i < upgrades.value.length; i++) {
     if (upgrades.value[i].type === 'manual') {
-      increment += upgrades.value[i].amount;
+      increment += upgrades.value[i].amount * upgrades.value[i].multiplier;
     }
   }
 
@@ -89,7 +89,7 @@ const autoClickIncrement = computed(() => {
   return Math.floor(increment);
 });
 
-function updateBank() {
+function updateBankOnClick() {
   bank.value += clickIncrement.value;
   totalBank.value += clickIncrement.value;
   totalClicks.value++;

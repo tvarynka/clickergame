@@ -7,6 +7,7 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.1,
     isHidden: false,
+    multiplier: 1,
     image: 'coin.svg',
   },
   {
