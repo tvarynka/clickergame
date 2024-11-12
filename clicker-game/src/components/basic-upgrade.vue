@@ -1,23 +1,32 @@
 <template>
   <div
-    v-if="!isHidden"
+    v-if="true || !isHidden"
     class="wrapper"
   >
     <button class="basic-upgrade" :disabled="!available">
-      <div class="name">
-        {{ name }}
+      <div class="left-column">
+        <div class="image-wrapper">
+          <img
+            v-if="upgrade.image"
+            class="image"
+            :src="require(`@/assets/images/upgrades/${upgrade.image}`)"
+          />
+        </div>
+        <div class="name">
+          {{ upgrade.name }}
+        </div>
       </div>
       <div class="right-column">
         <div class="price">
-          Вартість: {{ price }}
+          Вартість: {{ upgrade.price }}
         </div>
         <div class="amount">
-          Куплено: {{ amount }}
+          Куплено: {{ upgrade.amount }}
         </div>
       </div>
     </button>
     <div class="description">
-      {{ description }}
+      {{ upgrade.description }}
     </div>
   </div>
   <div
@@ -44,30 +53,13 @@
 import { defineProps } from 'vue';
 
 defineProps({
-  price: {
-    type: Number,
-    default: 1
-  },
-  name: {
-    type: String,
-    default: 'Upgrade name'
-  },
-  description: {
-    type: String,
-    default: 'I will do something cool',
-  },
-  amount: {
-    type: Number,
-    default: 0
+  upgrade: {
+    type: Object,
   },
   available: {
     type: Boolean,
     default: false,
   },
-  isHidden: {
-    type: Boolean,
-    default: true
-  }
 });
 </script>
 
@@ -107,5 +99,21 @@ defineProps({
 
 .wrapper:hover .description {
   display: block;
+}
+
+.image-wrapper {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.image {
+  height: 40px;
+  width: 40px;
+  object-fit: contain;
+}
+
+.left-column {
+  display: flex;
 }
 </style>

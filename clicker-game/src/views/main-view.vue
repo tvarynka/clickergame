@@ -28,12 +28,8 @@
     <div class="upgrades">
       <template :key="upgrade.name" v-for="upgrade of upgrades">
         <BasicUpgrade
-          :name="upgrade.name"
-          :amount="upgrade.amount"
-          :price="upgrade.price"
-          :description="upgrade.description"
+          :upgrade="upgrade"
           :available="bank >= upgrade.price"
-          :is-hidden="upgrade.isHidden"
           @click="updateUpgrade(upgrade.name)"
         />
       </template>
