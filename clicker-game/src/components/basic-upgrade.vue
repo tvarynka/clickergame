@@ -96,13 +96,14 @@ defineProps({
 .description {
   display: none;
   position: absolute;
-  right: 250px;
+  right: 100%;
   top: 10px;
   width: 200px;
   padding: 10px;
   border: 1px solid;
   z-index: 2;
   background-color: white;
+  margin-right: 10px;
 }
 
 .wrapper:hover .description {

@@ -7,7 +7,7 @@
   </div>
 
   <div ref="messageElement" class="message">
-    {{ message }}
+    {{ message }}dfsdfsdfds
   </div>
 </template>
 
@@ -54,7 +54,8 @@ function clickHandler(e) {
   gift.value.style.display = 'none';
   emit('click', type.value, prize.value);
 
-  messageElement.value.style.left = e.pageX + 'px';
+  //messageElement.value.style.left = e.pageX + 'px';
+  messageElement.value.style.right = '100px';
   messageElement.value.style.top = e.pageY + 'px';
   messageElement.value.style.display = 'block';
 
@@ -102,5 +103,6 @@ function generatePrize() {
   border-radius: 10px;
   box-shadow: 1px 3px 45px -14px rgba(66, 68, 90, 1);
   background-color: white;
+  z-index: 1;
 }
 </style>
