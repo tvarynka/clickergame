@@ -6,7 +6,6 @@ export const UPGRADES_LIST = [
     description: 'Дозволяє заробляти монетки кліками',
     amount: 0,
     priceIncreaseMultiplier: 1.1,
-    isHidden: false,
     multiplier: 1,
     image: 'coin.svg',
   },
@@ -18,7 +17,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.2,
     multiplier: 1,
-    isHidden: true,
     image: 'villager.png',
   },
   {
@@ -29,7 +27,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.3,
     multiplier: 3,
-    isHidden: true,
   },
   {
     name: 'Курка',
@@ -39,7 +36,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.4,
     multiplier: 3,
-    isHidden: true,
     image: 'chicken.png',
   },
   {
@@ -50,7 +46,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.5,
     multiplier: 8,
-    isHidden: true,
     image: 'pig.png',
   },
   {
@@ -61,7 +56,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.6,
     multiplier: 13,
-    isHidden: true,
     image: 'cow.png',
   },
   {
@@ -72,7 +66,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.7,
     multiplier: 20,
-    isHidden: true,
     image: 'farmer.png',
   },
   {
@@ -83,7 +76,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.8,
     multiplier: 35,
-    isHidden: true,
     image: 'lumberjack.png',
   },
   {
@@ -94,7 +86,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 1.9,
     multiplier: 50,
-    isHidden: true,
     image: 'miner.png',
   },
   {
@@ -105,7 +96,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 2,
     multiplier: 80,
-    isHidden: true,
     image: 'merchant.png',
   },
   {
@@ -116,7 +106,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 2.1,
     multiplier: 100,
-    isHidden: true,
     image: 'blacksmith.png',
   },
   {
@@ -127,7 +116,6 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 2.2,
     multiplier: 200,
-    isHidden: true,
   },
   {
     name: 'Мольфар',
@@ -137,6 +125,5 @@ export const UPGRADES_LIST = [
     amount: 0,
     priceIncreaseMultiplier: 2.3,
     multiplier: 1000,
-    isHidden: true,
   },
 ];

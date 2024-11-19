@@ -9,10 +9,9 @@
             :prize="prizeValue"
         />
       </div>
-      <BankComponent :count="bank" />
+      <BankComponent />
       <MainClicker @click="updateBankOnClick" :click-value="clickIncrement" />
       <StatisticsView
-        :total-bank="totalBank"
         :total-clicks="totalClicks"
         :click-value="clickIncrement"
         :autoclick-value="autoClickIncrement"
@@ -20,8 +19,6 @@
     </div>
 
     <AchievementsContainer
-      :bank="bank"
-      :total-bank="totalBank"
       :upgrades="upgrades"
     />
 
@@ -29,14 +26,13 @@
       <template :key="upgrade.name" v-for="upgrade of upgrades">
         <BasicUpgrade
           :upgrade="upgrade"
-          :available="bank >= upgrade.price"
           @click="updateUpgrade(upgrade.name)"
         />
       </template>
       
     </div>
 
-    <RandomGift :current-bank="bank" @click="prizeClickHandler" />
+    <RandomGift @click="prizeClickHandler" />
   </div>
 </template>
 
@@ -49,10 +45,12 @@ import RandomGift from '@/components/random-gift.vue';
 import AchievementsContainer from './achievements/achievements-container.vue';
 import StatisticsView from './statistics-view.vue';
 import TimerComponent from '@/components/timer-component.vue';
-import { UPGRADES_LIST } from '@/data';
+import { UPGRADES_LIST } from '@/data/upgrades';
 
-const bank = ref(0);
-const totalBank = ref(0);
+import { useStore } from 'vuex'
+
+const store = useStore();
+
 const totalClicks = ref(0);
 const upgrades = ref([]);
 const autoclickBonusIncrement = ref(1);
@@ -90,8 +88,7 @@ const autoClickIncrement = computed(() => {
 });
 
 function updateBankOnClick() {
-  bank.value += clickIncrement.value;
-  totalBank.value += clickIncrement.value;
+  store.dispatch('increaseBank', clickIncrement.value);
   totalClicks.value++;
 }
 
@@ -99,11 +96,11 @@ function updateUpgrade(name) {
   const upgradeIndex = upgrades.value.findIndex(obj => obj.name === name);
   const upgrade = upgrades.value[upgradeIndex];
 
-  if (upgrade.price > bank.value) {
+  if (upgrade.price > store.state.bank) {
     return;
   }
 
-  bank.value -= upgrade.price;
+  store.dispatch('decreaseBank', upgrade.price);
   upgrade.amount++;
   upgrade.price = Math.ceil((upgrade.price + upgrade.amount) * 1.2896685);
 
@@ -114,8 +111,7 @@ function prizeClickHandler(type, prize) {
   prizeValue.value =  prize;
   prizeType.value = type;
   if (type === 'money') {
-    bank.value += prize;
-    totalBank.value += prize;
+    store.dispatch('increaseBank', prize);
   } else if (type === 'autoClickBonus') {
     autoclickBonusIncrement.value = prize;
     timer.value = 30;
@@ -135,24 +131,11 @@ function prizeClickHandler(type, prize) {
   }
 }
 
-function updateUpgradesVisibility() {
-  upgrades.value.forEach((upgrade, index) => {
-    if (upgrade.isHidden) {
-      if (upgrade.price <= totalBank.value) {
-        upgrades.value[index].isHidden = false;
-      }
-    }
-  });
-}
-
 onMounted(() => {
   upgrades.value = UPGRADES_LIST;
 
   setInterval(() => {
-    bank.value += autoClickIncrement.value;
-    totalBank.value += autoClickIncrement.value;
-
-    updateUpgradesVisibility();
+    store.dispatch('increaseBank', autoClickIncrement.value);
   }, 1000);
 });
 </script>

@@ -1,61 +1,57 @@
 <template>
   <div
-    ref="gift"
+    ref="giftElement"
     class="gift"
     @click="clickHandler"
   >
   </div>
 
   <div ref="messageElement" class="message">
-    {{ message }}dfsdfsdfds
+    {{ message }}
   </div>
 </template>
 
-<script setup>
-import { onMounted, ref, defineEmits, defineProps } from 'vue';
+<script setup lang="ts">
+import { onMounted, ref, defineEmits, Ref } from 'vue';
+import { RANDOM_GIFTS } from '@/data/random-gifts';
 
-const gift = ref(null);
-const prize = ref(0);
+const giftElement = ref(null);
 const message = ref('');
 const messageElement = ref(null);
-const type = ref('');
-
 const emit = defineEmits(['click']);
 
-const props = defineProps({
-  currentBank: {
-    type: Number,
-    default: 10,
-  }
-});
+interface Gift {
+  type: String,
+  time: Number,
+  value: Number,
+};
 
-const types = ['money', 'autoClickBonus', 'clickBonus'];
+const gift: Ref<Gift | null> = ref(null);
 
 onMounted(() => {
   setInterval(() => {
     const left = Math.random() * (document.documentElement.clientWidth - 400);
     const top = Math.random() * (document.documentElement.clientHeight - 400);
 
-    gift.value.style.display = 'flex';
-    gift.value.style.left = left + 'px';
-    gift.value.style.top = top + 'px';
+    giftElement.value.style.display = 'flex';
+    giftElement.value.style.left = left + 'px';
+    giftElement.value.style.top = top + 'px';
 
     generatePrize();
 
     setTimeout(() => {
-      if (gift.value) {
-        gift.value.style.display = 'none';
+      if (giftElement.value) {
+        giftElement.value.style.display = 'none';
       }
     }, 10000);
   }, 60000);
 });
 
 function clickHandler(e) {
-  gift.value.style.display = 'none';
-  emit('click', type.value, prize.value);
+  giftElement.value.style.display = 'none';
+  emit('click', gift.value);
 
-  //messageElement.value.style.left = e.pageX + 'px';
-  messageElement.value.style.right = '100px';
+  messageElement.value.style.left = e.pageX + 'px';
   messageElement.value.style.top = e.pageY + 'px';
   messageElement.value.style.display = 'block';
 
@@ -65,18 +61,15 @@ function clickHandler(e) {
 }
 
 function generatePrize() {
-  type.value = types[Math.round(Math.random() * (types.length - 1))];
+  const gift = RANDOM_GIFTS[Math.round(Math.random() * (RANDOM_GIFTS.length - 1))];
 
-  if (type.value === 'money') {
-    prize.value = Math.ceil(Math.random() * (props.currentBank < 10 ? 10 : props.currentBank) / 2);
-    message.value = `Ви одержали +${prize.value} в банк`;
-  } else if (type.value === 'autoClickBonus') {
-    prize.value = Math.max(Math.floor(Math.random() * 3), 1.2);
-    message.value = `Ви одержали x${prize.value} до автокліку на 30 секунд`;
-  } if (type.value === 'clickBonus') {
-    prize.value = Math.max(Math.floor(Math.random() * 10), 1.2);
-    message.value = `Ви одержали x${prize.value} до кліку на 30 секунд`;
-  }
+  // if (type.value === 'money') {
+  //   message.value = `Ви одержали +${prize.value} в банк`;
+  // } else if (type.value === 'autoClickBonus') {
+  //   message.value = `Ви одержали x${prize.value} до автокліку на 30 секунд`;
+  // } if (type.value === 'clickBonus') {
+  //   message.value = `Ви одержали x${prize.value} до кліку на 30 секунд`;
+  // }
 }
 </script>
 

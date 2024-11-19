@@ -1,7 +1,7 @@
 <template>
   <div class="statistics-container">
     <div class="stat">
-      Усього зароблено за весь час: {{ totalBank }}
+      Усього зароблено за весь час: {{ store.state.totalBank }}
     </div>
     <div class="stat">
       Усього кліків за весь час: {{ totalClicks }}
@@ -17,11 +17,11 @@
 
 <script setup>
 import { defineProps } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 defineProps({
-  totalBank: {
-    type: Number,
-  },
   totalClicks: {
     type: Number,
   },
