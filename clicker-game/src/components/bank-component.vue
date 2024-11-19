@@ -1,4 +1,7 @@
 <template>
+  <div>
+    Монет в казні:
+  </div>
   <div class="counter">
     {{ count }}
   </div>
@@ -15,7 +18,7 @@ defineProps({
 <style scoped>
 .counter {
   font-size: 40px;
-  color: blue;
+  color: goldenrod;
   margin: 30px 0;
 }
 </style>
