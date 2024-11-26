@@ -1,9 +1,9 @@
 <template>
   <div
-    v-if="true || !isHidden"
+    v-if="!isHidden"
     class="wrapper"
   >
-    <button v-if="true || !isHidden" class="basic-upgrade" :disabled="!available">
+    <button class="basic-upgrade" :disabled="!available">
       <div class="content-wrapper">
         <div class="left-column">
           <div class="image-wrapper">
@@ -41,12 +41,17 @@
     class="wrapper"
   >
     <button class="basic-upgrade" disabled>
-      <div class="name">
-        ???
-      </div>
-      <div class="right-column">
-        <div class="price">
-          Вартість: ???
+      <div class="content-wrapper">
+        <div class="left-column">
+          <div class="image-wrapper"></div>
+          <div class="name-hidden">
+            ???
+          </div>
+        </div>
+        <div class="right-column">
+          <div class="price">
+            Вартість: ???
+          </div>
         </div>
       </div>
     </button>
@@ -58,20 +63,23 @@
 
 <script setup>
 import { defineProps, computed } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 const props = defineProps({
   upgrade: {
     type: Object,
-  },
-  available: {
-    type: Boolean,
-    default: false,
   },
 });
 
 const description = computed(() => `Монет за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'}: ${props.upgrade.amount * props.upgrade.multiplier}`);
 
 const tooltipText = computed(() => `${props.upgrade.description}. Збільшує дохід за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'} на ${props.upgrade.multiplier}`);
+
+const available = computed(() => store.state.bank >= props.upgrade.price);
+
+const isHidden = computed(() => store.state.totalBank < props.upgrade.price);
 </script>
 
 <style scoped>
@@ -114,13 +122,14 @@ const tooltipText = computed(() => `${props.upgrade.description}. Збільшу
 .description {
   display: none;
   position: absolute;
-  right: 250px;
+  right: 100%;
   top: 10px;
   width: 200px;
   padding: 10px;
   border: 1px solid;
   z-index: 2;
   background-color: white;
+  margin-right: 10px;
 }
 
 .wrapper:hover .description {
@@ -131,6 +140,9 @@ const tooltipText = computed(() => `${props.upgrade.description}. Збільшу
   width: 40px;
   height: 40px;
   margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .image {
@@ -145,5 +157,10 @@ const tooltipText = computed(() => `${props.upgrade.description}. Збільшу
 
 .name {
   text-align: left;
+}
+
+.name-hidden {
+  display: flex;
+  align-items: center;
 }
 </style>

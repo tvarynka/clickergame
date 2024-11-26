@@ -1,81 +1,149 @@
 <template>
-  <div
-    ref="gift"
-    class="gift"
-    @click="clickHandler"
+  <template
+    v-for="giftItem of giftItems"
+    :key="giftItem"
   >
-  </div>
+    <div
+      class="gift"
+      :style="`display: flex; left: ${giftItem.left}px; top: ${giftItem.top}px`"
+      @click="clickHandler(giftItem)"
+    >
+    </div>
+  </template>
 
-  <div ref="messageElement" class="message">
-    {{ message }}
-  </div>
+  <template
+    v-for="message of messages"
+    :key="message"
+  >
+    <div
+      class="message"
+      :style="`display: flex; left: ${message.left}px; top: ${message.top}px`"
+    >
+      {{ message.text }}
+    </div>
+  </template>
 </template>
 
 <script setup>
-import { onMounted, ref, defineEmits, defineProps } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
+import { RANDOM_GIFTS } from '@/data/random-gifts';
+import { useStore } from 'vuex';
 
-const gift = ref(null);
-const prize = ref(0);
-const message = ref('');
-const messageElement = ref(null);
-const type = ref('');
+const store = useStore();
 
-const emit = defineEmits(['click']);
-
-const props = defineProps({
-  currentBank: {
-    type: Number,
-    default: 10,
-  }
-});
-
-const types = ['money', 'autoClickBonus', 'clickBonus'];
+const giftItems = ref([]);
+const messages = ref([]);
+const activeGifts = ref([]);
+const gift = ref({});
 
 onMounted(() => {
   setInterval(() => {
     const left = Math.random() * (document.documentElement.clientWidth - 400);
-    const top = Math.random() * (document.documentElement.clientHeight - 400);
+    const top = Math.random() * (document.documentElement.clientHeight - 40);
 
-    gift.value.style.display = 'flex';
-    gift.value.style.left = left + 'px';
-    gift.value.style.top = top + 'px';
+    const newGiftItem = {
+      left,
+      top,
+    };
 
-    generatePrize();
+    giftItems.value.push(newGiftItem);
 
     setTimeout(() => {
-      if (gift.value) {
-        gift.value.style.display = 'none';
-      }
+      removeGiftElement(newGiftItem);
     }, 10000);
   }, 60000);
 });
 
-function clickHandler(e) {
-  gift.value.style.display = 'none';
-  emit('click', type.value, prize.value);
+const autoClickBonus = computed(() => {
+  let bonus = 1;
 
-  messageElement.value.style.left = e.pageX + 'px';
-  messageElement.value.style.top = e.pageY + 'px';
-  messageElement.value.style.display = 'block';
+  for (let i = 0; i < activeGifts.value.length; i++) {
+    if (activeGifts.value[i].type === 'autoClickBonus') {
+      bonus = bonus * activeGifts.value[i].value;
+    }
+  }
 
-  setTimeout(() => {
-    messageElement.value.style.display = 'none';
-  }, 2000);
+  return bonus;
+});
+
+const clickBonus = computed(() => {
+  let bonus = 1;
+
+  for (let i = 0; i < activeGifts.value.length; i++) {
+    if (activeGifts.value[i].type === 'clickBonus') {
+      bonus = bonus * activeGifts.value[i].value;
+    }
+  }
+
+  return bonus;
+});
+
+watch(autoClickBonus, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    store.dispatch('changeAutoclickBonusAction', newValue);
+  }
+});
+
+watch(clickBonus, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    store.dispatch('changeClickBonusAction', newValue);
+  }
+});
+
+function clickHandler(giftItem) {
+  generatePrize();
+  removeGiftElement(giftItem);
+
+  displayMessage(giftItem);
+  processGiftValue(giftItem);
 }
 
 function generatePrize() {
-  type.value = types[Math.round(Math.random() * (types.length - 1))];
+  gift.value = RANDOM_GIFTS[Math.round(Math.random() * (RANDOM_GIFTS.length - 1))];
+}
 
-  if (type.value === 'money') {
-    prize.value = Math.ceil(Math.random() * (props.currentBank < 10 ? 10 : props.currentBank) / 2);
-    message.value = `Ви одержали +${prize.value} в банк`;
-  } else if (type.value === 'autoClickBonus') {
-    prize.value = Math.max(Math.floor(Math.random() * 3), 1.2);
-    message.value = `Ви одержали x${prize.value} до автокліку на 30 секунд`;
-  } if (type.value === 'clickBonus') {
-    prize.value = Math.max(Math.floor(Math.random() * 10), 1.2);
-    message.value = `Ви одержали x${prize.value} до кліку на 30 секунд`;
+function displayMessage(giftItem) {
+  let message = {
+    left: giftItem.left,
+    top: giftItem.top,
+  };
+
+  if (gift.value.type === 'money') {
+    message.text = `Ви одержали +${gift.value.value} в банк`;
+  } else if (gift.value.type=== 'autoClickBonus') {
+    message.text = `Ви одержали x${gift.value.value} до автокліку на ${gift.value.time} секунд`;
+  } if (gift.value.type === 'clickBonus') {
+    message.text = `Ви одержали x${gift.value.value} до кліку на ${gift.value.time} секунд`;
   }
+
+  messages.value.push(message);
+
+  setTimeout(() => {
+    messages.value = messages.value.filter((item) => !isSameItem(item, message));
+  }, 2000);
+}
+
+function processGiftValue(giftItem) {
+  const currentGift = {...giftItem, ...gift.value};
+
+  if (currentGift.type === 'money') {
+    store.dispatch('increaseBank', currentGift.value);
+    return;
+  }
+
+  activeGifts.value.push(currentGift);
+
+  setTimeout(() => {
+    activeGifts.value = activeGifts.value.filter((item) => !isSameItem(item, currentGift));
+  }, currentGift.time * 1000);
+}
+
+function isSameItem(object1, object2) {
+  return object1.top === object2.top && object1.left === object2.left;
+}
+
+function removeGiftElement(itemToRemove) {
+  giftItems.value = giftItems.value.filter((giftItem) =>  !isSameItem(giftItem, itemToRemove));
 }
 </script>
 
@@ -102,5 +170,6 @@ function generatePrize() {
   border-radius: 10px;
   box-shadow: 1px 3px 45px -14px rgba(66, 68, 90, 1);
   background-color: white;
+  z-index: 1;
 }
 </style>

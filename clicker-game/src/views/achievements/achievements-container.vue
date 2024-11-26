@@ -18,43 +18,40 @@
 <script setup>
 import { defineProps, computed } from 'vue';
 import AchievementItem from './achievement-item.vue';
+import { useStore } from 'vuex';
 
 const props = defineProps({
-  bank: {
-    type: Number
-  },
-  totalBank: {
-    type: Number
-  },
   upgrades: {
     type: Array
   }
 });
 
+const store = useStore();
+
 const achievements = computed(() => [
   {
     name: 'Перший гріш',
-    isAchieved: props.totalBank > 0,
+    isAchieved: store.state.totalBank > 0,
     description: 'Зароблено першу монетку',
   },
   {
     name: 'Дзвенить у кишені',
-    isAchieved: props.totalBank > 100,
+    isAchieved: store.state.totalBank > 100,
     description: 'Маєш 100 монет в банку',
   },
   {
     name: 'Багач',
-    isAchieved: props.totalBank > 10000,
+    isAchieved: store.state.totalBank > 10000,
     description: 'Сумарно зароблено 10000 монет',
   },
   {
     name: 'Мільйонер',
-    isAchieved: props.totalBank > 1000000,
+    isAchieved: store.state.totalBank > 1000000,
     description: 'Сумарно зароблено 1000000 монет',
   },
   {
     name: 'Мільярдер',
-    isAchieved: props.totalBank > 1000000000,
+    isAchieved: store.state.totalBank > 1000000000,
     description: 'Сумарно зароблено 1000000000 монет',
   },
   {

@@ -3,16 +3,14 @@
     Монет в казні:
   </div>
   <div class="counter">
-    {{ count }}
+    {{ store.state.bank }}
   </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { useStore } from 'vuex';
 
-defineProps({
-  count: Number
-})
+const store = useStore();
 </script>
 
 <style scoped>
