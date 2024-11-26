@@ -4,6 +4,8 @@ export default createStore({
   state: {
     totalBank: 0,
     bank: 0,
+    clickBonus: 1,
+    autoClickBonus: 1,
   },
   getters: {
     bank(state) {
@@ -11,6 +13,12 @@ export default createStore({
     },
     totalBank(state) {
       return state.totalBank;
+    },
+    clickBonus(state) {
+      return state.clickBonus;
+    },
+    autoClickBonus(state) {
+      return state.autoClickBonus;
     },
   },
   mutations: {
@@ -23,6 +31,12 @@ export default createStore({
     addToTotalBank(state, amount) {
       state.totalBank += amount;
     },
+    changeClickBonus(state, amount) {
+      state.clickBonus = amount;
+    },
+    changeAutoclickBonus(state, amount) {
+      state.autoClickBonus = amount;
+    },
   },
   actions: {
     increaseBank(context, amount) {
@@ -31,6 +45,12 @@ export default createStore({
     },
     decreaseBank(context, amount) {
       context.commit('removeFromBank', amount);
-    }
+    },
+    changeClickBonusAction(context, amount) {
+      context.commit('changeClickBonus', amount);
+    },
+    changeAutoclickBonusAction(context, amount) {
+      context.commit('changeAutoclickBonus', amount);
+    },
   },
 });

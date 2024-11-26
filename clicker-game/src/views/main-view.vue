@@ -32,7 +32,7 @@
       
     </div>
 
-    <RandomGift @click="prizeClickHandler" />
+    <RandomGift />
   </div>
 </template>
 
@@ -47,14 +47,12 @@ import StatisticsView from './statistics-view.vue';
 import TimerComponent from '@/components/timer-component.vue';
 import { UPGRADES_LIST } from '@/data/upgrades';
 
-import { useStore } from 'vuex'
+import { useStore } from 'vuex';
 
 const store = useStore();
 
 const totalClicks = ref(0);
 const upgrades = ref([]);
-const autoclickBonusIncrement = ref(1);
-const clickBonusIncrement = ref(1);
 const timer = ref(0);
 const prizeValue = ref(0);
 const prizeType = ref('');
@@ -68,7 +66,7 @@ const clickIncrement = computed(() => {
     }
   }
 
-  increment = increment * clickBonusIncrement.value;
+  increment = increment * store.state.clickBonus;
 
   return Math.floor(increment);
 });
@@ -82,7 +80,7 @@ const autoClickIncrement = computed(() => {
     }
   }
 
-  increment = increment * autoclickBonusIncrement.value;
+  increment = increment * store.state.autoClickBonus;
 
   return Math.floor(increment);
 });
@@ -105,30 +103,6 @@ function updateUpgrade(name) {
   upgrade.price = Math.ceil((upgrade.price + upgrade.amount) * 1.2896685);
 
   upgrades.value[upgradeIndex] = upgrade;
-}
-
-function prizeClickHandler(type, prize) {
-  prizeValue.value =  prize;
-  prizeType.value = type;
-  if (type === 'money') {
-    store.dispatch('increaseBank', prize);
-  } else if (type === 'autoClickBonus') {
-    autoclickBonusIncrement.value = prize;
-    timer.value = 30;
-
-    setTimeout(() => {
-      autoclickBonusIncrement.value = 1;
-      timer.value = 0;
-    }, 30000);
-  } if (type === 'clickBonus') {
-    clickBonusIncrement.value = prize;
-    timer.value = 30;
-
-    setTimeout(() => {
-      clickBonusIncrement.value = 1;
-      timer.value = 0;
-    }, 30000);
-  }
 }
 
 onMounted(() => {
