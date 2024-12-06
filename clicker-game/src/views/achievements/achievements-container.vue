@@ -74,6 +74,16 @@ const achievements = computed(() => [
     isAchieved: allAmountsAreBiggerThen(100),
     description: 'Є по 100 кожного покращення',
   },
+  {
+    name: 'Юліна тисяча',
+    isAchieved: store.state.clickIncrement + store.state.clickBonus >= 1000,
+    description: 'Досягти 1000 монет за клік'
+  },
+  {
+    name: 'Тисяча Зеленського',
+    isAchieved: store.state.clickIncrement >= 1000,
+    description: 'Досягти 1000 монет за клік без врахування бонусів'
+  }
 ]);
 
 const achieved = computed(() => {

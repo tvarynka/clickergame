@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, ref, watch, computed, defineEmits } from 'vue';
 import { RANDOM_GIFTS } from '@/data/random-gifts';
 import { useStore } from 'vuex';
 
@@ -35,6 +35,8 @@ const giftItems = ref([]);
 const messages = ref([]);
 const activeGifts = ref([]);
 const gift = ref({});
+
+const emit = defineEmits(['input']);
 
 onMounted(() => {
   setInterval(() => {
@@ -96,6 +98,8 @@ function clickHandler(giftItem) {
 
   displayMessage(giftItem);
   processGiftValue(giftItem);
+
+  emit('input', activeGifts.value);
 }
 
 function generatePrize() {
@@ -135,6 +139,7 @@ function processGiftValue(giftItem) {
 
   setTimeout(() => {
     activeGifts.value = activeGifts.value.filter((item) => !isSameItem(item, currentGift));
+    emit('input', activeGifts.value);
   }, currentGift.time * 1000);
 }
 

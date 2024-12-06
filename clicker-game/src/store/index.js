@@ -6,6 +6,7 @@ export default createStore({
     bank: 0,
     clickBonus: 1,
     autoClickBonus: 1,
+    clickIncrement: 1,
   },
   getters: {
     bank(state) {
@@ -37,6 +38,9 @@ export default createStore({
     changeAutoclickBonus(state, amount) {
       state.autoClickBonus = amount;
     },
+    changeClickIncrement(state, amount) {
+      state.clickIncrement = amount;
+    },
   },
   actions: {
     increaseBank(context, amount) {
@@ -51,6 +55,9 @@ export default createStore({
     },
     changeAutoclickBonusAction(context, amount) {
       context.commit('changeAutoclickBonus', amount);
+    },
+    changeClickIncrementAction(context, amount) {
+      context.commit('changeClickIncrement', amount);
     },
   },
 });
