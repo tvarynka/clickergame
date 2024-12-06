@@ -2,12 +2,15 @@
   <div class="main">
     <div class="bank">
       <div class="timer-wrapper">
-        <TimerComponent
-            v-if="timer > 0"
-            :time="timer"
-            :type="prizeType"
-            :prize="prizeValue"
-        />
+        <template
+          v-for="activeGift in activeGifts"
+          :key="activeGift"
+        >
+          <TimerComponent
+            v-if="activeGift.type !== 'money'"
+            :gift="activeGift"
+          />
+        </template>
       </div>
       <BankComponent />
       <MainClicker @click="updateBankOnClick" :click-value="clickIncrement" />
@@ -32,7 +35,7 @@
       
     </div>
 
-    <RandomGift />
+    <RandomGift @input="(value) => activeGifts = value" />
   </div>
 </template>
 
@@ -53,9 +56,7 @@ const store = useStore();
 
 const totalClicks = ref(0);
 const upgrades = ref([]);
-const timer = ref(0);
-const prizeValue = ref(0);
-const prizeType = ref('');
+const activeGifts = ref([]);
 
 const clickIncrement = computed(() => {
   let increment = 1;
@@ -125,6 +126,8 @@ onMounted(() => {
 
   .bank {
     width: 400px;
+    position: relative;
+    padding-top: 30px;
   }
 
   .upgrades {
@@ -132,8 +135,13 @@ onMounted(() => {
   }
 
   .timer-wrapper {
-    height: 100px;
-    width: 400px;
-    position: relative;
+    height: 325px;
+    width: 120px;
+    position: absolute;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-end;
   }
 </style>
