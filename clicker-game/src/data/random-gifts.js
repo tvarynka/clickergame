@@ -1,23 +1,27 @@
 export const RANDOM_GIFTS = [
   {
     type: 'money',
+    value: 1,
+  },
+  {
+    type: 'money',
+    value: 5,
+  },
+  {
+    type: 'money',
     value: 10,
   },
   {
     type: 'money',
-    value: 100,
+    value: 25,
   },
   {
     type: 'money',
-    value: 500,
+    value: 50,
   },
   {
     type: 'money',
-    value: 1000,
-  },
-  {
-    type: 'money',
-    value: 10000,
+    value: 80,
   },
   {
     type: 'autoClickBonus',
