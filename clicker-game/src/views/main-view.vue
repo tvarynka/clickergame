@@ -59,7 +59,7 @@ const upgrades = ref([]);
 const activeGifts = ref([]);
 
 const clickIncrement = computed(() => {
-  let increment = 1;
+  let increment = store.state.baseClickValue;
 
   for (let i = 0; i < upgrades.value.length; i++) {
     if (upgrades.value[i].type === 'manual') {
@@ -67,6 +67,7 @@ const clickIncrement = computed(() => {
     }
   }
 
+  store.dispatch('changeClickIncrementAction', increment);
   increment = increment * store.state.clickBonus;
 
   return Math.floor(increment);
@@ -81,7 +82,8 @@ const autoClickIncrement = computed(() => {
     }
   }
 
-  increment = increment * store.state.autoClickBonus;
+  store.dispatch('changeAutoclickIncrementAction', increment * store.state.baseAutoclickBonus);
+  increment = increment * store.state.autoClickBonus * store.state.baseAutoclickBonus;
 
   return Math.floor(increment);
 });

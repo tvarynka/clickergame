@@ -103,7 +103,13 @@ function clickHandler(giftItem) {
 }
 
 function generatePrize() {
-  gift.value = RANDOM_GIFTS[Math.round(Math.random() * (RANDOM_GIFTS.length - 1))];
+  if (activeGifts.value.length >= 5) {
+    do {
+      gift.value = RANDOM_GIFTS[Math.round(Math.random() * (RANDOM_GIFTS.length - 1))];
+    } while (gift.value.type !== 'money')
+  } else {
+    gift.value = RANDOM_GIFTS[Math.round(Math.random() * (RANDOM_GIFTS.length - 1))];
+  }
 }
 
 function displayMessage(giftItem) {
@@ -113,11 +119,13 @@ function displayMessage(giftItem) {
   };
 
   if (gift.value.type === 'money') {
-    message.text = `Ви одержали +${gift.value.value} в банк`;
+    message.text = `Ви одержали +${Math.max(Math.round(store.state.bank * gift.value.value / 100), 100)} в банк`;
   } else if (gift.value.type=== 'autoClickBonus') {
     message.text = `Ви одержали x${gift.value.value} до автокліку на ${gift.value.time} секунд`;
   } if (gift.value.type === 'clickBonus') {
     message.text = `Ви одержали x${gift.value.value} до кліку на ${gift.value.time} секунд`;
+  } if (gift.value.type === 'giftFrequency') {
+    message.text = `Подарунки з'являються x${gift.value.value} раз частіше наступні ${gift.value.time} секунд`;
   }
 
   messages.value.push(message);
@@ -131,7 +139,7 @@ function processGiftValue(giftItem) {
   const currentGift = {...giftItem, ...gift.value};
 
   if (currentGift.type === 'money') {
-    store.dispatch('increaseBank', currentGift.value);
+    store.dispatch('increaseBank', Math.max(Math.round(store.state.bank * currentGift.value / 100), 100));
     return;
   }
 

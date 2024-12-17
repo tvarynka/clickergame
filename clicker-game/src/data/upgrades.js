@@ -16,7 +16,7 @@ export const UPGRADES_LIST = [
     description: 'Автоматично заробляє монетки раз на секунду',
     amount: 0,
     priceIncreaseMultiplier: 1.2,
-    multiplier: 1,
+    multiplier: 5,
     image: 'villager.png',
   },
   {
@@ -26,7 +26,7 @@ export const UPGRADES_LIST = [
     description: 'Допомагає заробляти більше монеток за клік',
     amount: 0,
     priceIncreaseMultiplier: 1.3,
-    multiplier: 3,
+    multiplier: 10,
   },
   {
     name: 'Курка',
@@ -35,7 +35,7 @@ export const UPGRADES_LIST = [
     description: 'Несе яєчка і заробляє монетки',
     amount: 0,
     priceIncreaseMultiplier: 1.4,
-    multiplier: 3,
+    multiplier: 20,
     image: 'chicken.png',
   },
   {
@@ -45,7 +45,7 @@ export const UPGRADES_LIST = [
     description: 'Шукає жолуді і заробляє монетки',
     amount: 0,
     priceIncreaseMultiplier: 1.5,
-    multiplier: 8,
+    multiplier: 50,
     image: 'pig.png',
   },
   {
@@ -55,7 +55,7 @@ export const UPGRADES_LIST = [
     description: 'Приносить молочко і збільшує заробіток за секунду',
     amount: 0,
     priceIncreaseMultiplier: 1.6,
-    multiplier: 13,
+    multiplier: 80,
     image: 'cow.png',
   },
   {
@@ -65,7 +65,7 @@ export const UPGRADES_LIST = [
     description: 'Вирощує пшеницю та заробляє щосекунди монетки',
     amount: 0,
     priceIncreaseMultiplier: 1.7,
-    multiplier: 20,
+    multiplier: 120,
     image: 'farmer.png',
   },
   {
@@ -75,7 +75,7 @@ export const UPGRADES_LIST = [
     description: 'Рубає дерева і заробляє монетки',
     amount: 0,
     priceIncreaseMultiplier: 1.8,
-    multiplier: 35,
+    multiplier: 175,
     image: 'lumberjack.png',
   },
   {
@@ -85,7 +85,7 @@ export const UPGRADES_LIST = [
     description: 'Здобуває руду і заробляє монетки',
     amount: 0,
     priceIncreaseMultiplier: 1.9,
-    multiplier: 50,
+    multiplier: 220,
     image: 'miner.png',
   },
   {
@@ -95,7 +95,7 @@ export const UPGRADES_LIST = [
     description: 'Заробляє монетки щосекунди',
     amount: 0,
     priceIncreaseMultiplier: 2,
-    multiplier: 80,
+    multiplier: 300,
     image: 'merchant.png',
   },
   {
@@ -105,7 +105,7 @@ export const UPGRADES_LIST = [
     description: 'Кує залізо та заробляє монетки',
     amount: 0,
     priceIncreaseMultiplier: 2.1,
-    multiplier: 100,
+    multiplier: 500,
     image: 'blacksmith.png',
   },
   {
@@ -115,7 +115,7 @@ export const UPGRADES_LIST = [
     description: 'Заробляєм монетки, але зменшує ефективність корчми',
     amount: 0,
     priceIncreaseMultiplier: 2.2,
-    multiplier: 200,
+    multiplier: 800,
   },
   {
     name: 'Мольфар',
