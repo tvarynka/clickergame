@@ -13,23 +13,26 @@
         </template>
       </div>
       <BankComponent />
-      <MainClicker @click="updateBankOnClick" :click-value="clickIncrement" />
+      <MainClicker @click="updateBankOnClick" :click-value="clickValue" />
       <StatisticsView
         :total-clicks="totalClicks"
-        :click-value="clickIncrement"
-        :autoclick-value="autoClickIncrement"
+        :click-value="clickValue"
+        :autoclick-value="autoclickValue"
       />
     </div>
 
     <AchievementsContainer
-      :upgrades="upgrades"
+      :upgrades="userUpgrades"
+      :click-value="clickValue"
+      :autoclick-value="autoclickValue"
     />
 
     <div class="upgrades">
-      <template :key="upgrade.name" v-for="upgrade of upgrades">
+      <template :key="upgrade.name" v-for="upgrade of UPGRADES_LIST">
         <BasicUpgrade
           :upgrade="upgrade"
-          @click="updateUpgrade(upgrade.name)"
+          :amount="getUpgradeAmount(upgrade.name)"
+          @update="updateUpgrade"
         />
       </template>
       
@@ -55,64 +58,57 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 const totalClicks = ref(0);
-const upgrades = ref([]);
+const userUpgrades = ref(new Map());
 const activeGifts = ref([]);
 
-const clickIncrement = computed(() => {
-  let increment = store.state.baseClickValue;
+const clickValue = computed(() => {
+  let increment = 1;
 
-  for (let i = 0; i < upgrades.value.length; i++) {
-    if (upgrades.value[i].type === 'manual') {
-      increment += upgrades.value[i].amount * upgrades.value[i].multiplier;
+  for (let i = 0; i < UPGRADES_LIST.length; i++) {
+    if (UPGRADES_LIST[i].type === 'manual') {
+      increment += userUpgrades.value.get(UPGRADES_LIST[i].name) * UPGRADES_LIST[i].multiplier;
     }
   }
 
-  store.dispatch('changeClickIncrementAction', increment);
   increment = increment * store.state.clickBonus;
 
   return Math.floor(increment);
 });
 
-const autoClickIncrement = computed(() => {
+const autoclickValue = computed(() => {
   let increment = 0;
 
-  for (let i = 0; i < upgrades.value.length; i++) {
-    if (upgrades.value[i].type === 'auto') {
-      increment += upgrades.value[i].amount * upgrades.value[i].multiplier;
+  for (let i = 0; i < UPGRADES_LIST.length; i++) {
+    if (UPGRADES_LIST[i].type === 'auto') {
+      increment += userUpgrades.value.get(UPGRADES_LIST[i].name) * UPGRADES_LIST[i].multiplier;
     }
   }
 
-  store.dispatch('changeAutoclickIncrementAction', increment * store.state.baseAutoclickBonus);
-  increment = increment * store.state.autoClickBonus * store.state.baseAutoclickBonus;
+  increment = increment * store.state.autoClickBonus;
 
   return Math.floor(increment);
 });
 
 function updateBankOnClick() {
-  store.dispatch('increaseBank', clickIncrement.value);
+  store.dispatch('increaseBank', clickValue.value);
   totalClicks.value++;
 }
 
 function updateUpgrade(name) {
-  const upgradeIndex = upgrades.value.findIndex(obj => obj.name === name);
-  const upgrade = upgrades.value[upgradeIndex];
+  userUpgrades.value.set(name, userUpgrades.value.get(name) + 1);
+}
 
-  if (upgrade.price > store.state.bank) {
-    return;
-  }
-
-  store.dispatch('decreaseBank', upgrade.price);
-  upgrade.amount++;
-  upgrade.price = Math.ceil((upgrade.price + upgrade.amount) * 1.2896685);
-
-  upgrades.value[upgradeIndex] = upgrade;
+function getUpgradeAmount(name) {
+  return userUpgrades.value.get(name);
 }
 
 onMounted(() => {
-  upgrades.value = UPGRADES_LIST;
+  for (let upgrade of UPGRADES_LIST) {
+    userUpgrades.value.set(upgrade.name, 0);
+  }
 
   setInterval(() => {
-    store.dispatch('increaseBank', autoClickIncrement.value);
+    store.dispatch('increaseBank', autoclickValue.value);
   }, 1000);
 });
 </script>
@@ -124,6 +120,7 @@ onMounted(() => {
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
+    overflow: hidden;
   }
 
   .bank {
@@ -134,6 +131,8 @@ onMounted(() => {
 
   .upgrades {
     width: 350px;
+    max-height: 100vh;
+    overflow: auto;
   }
 
   .timer-wrapper {

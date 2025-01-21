@@ -23,4 +23,8 @@ body {
   user-select: none;
   background-color: #dfd9d3;
 }
+
+body {
+  overflow: hidden;
+}
 </style>

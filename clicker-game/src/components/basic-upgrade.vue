@@ -2,6 +2,9 @@
   <div
     v-if="!isHidden"
     class="wrapper"
+    @click="processClick"
+    @mouseenter="processMouseOver"
+    @mouseleave="processMouseleave"
   >
     <button class="basic-upgrade" :disabled="!available">
       <div class="content-wrapper">
@@ -24,21 +27,20 @@
         </div>
         <div class="right-column">
           <div class="price">
-            Вартість: {{ upgrade.price }}
+            Вартість: {{ price }}
           </div>
           <div class="amount">
-            Куплено: {{ upgrade.amount }}
+            Куплено: {{ props.amount }}
           </div>
         </div>
       </div>
     </button>
-    <div class="description">
-      {{ tooltipText }}
-    </div>
   </div>
   <div
     v-else
     class="wrapper"
+    @mouseenter="processMouseOver"
+    @mouseleave="processMouseleave"
   >
     <button class="basic-upgrade" disabled>
       <div class="content-wrapper">
@@ -55,14 +57,15 @@
         </div>
       </div>
     </button>
-    <div class="description">
-      ???
-    </div>
+  </div>
+
+  <div class="description" ref="descriptionElement">
+    {{ tooltipText }}
   </div>
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue';
+import { defineProps, computed, defineEmits, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -71,29 +74,55 @@ const props = defineProps({
   upgrade: {
     type: Object,
   },
+  amount: {
+    type: Number
+  }
 });
 
-const description = computed(() => `Монет за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'}: ${props.upgrade.amount * props.upgrade.multiplier}`);
+const emit = defineEmits(['update']);
+
+const description = computed(() => `Монет за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'}: ${props.amount * props.upgrade.multiplier}`);
 
 const tooltipText = computed(() => `${props.upgrade.description}. Збільшує дохід за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'} на ${props.upgrade.multiplier}`);
 
 const available = computed(() => store.state.bank >= props.upgrade.price);
 
 const isHidden = computed(() => store.state.totalBank < props.upgrade.price);
+
+const price = computed(() => Math.round(props.upgrade.price * (props.amount === 0 ? 1 : props.amount * 1.1245563)));
+
+const descriptionElement = ref();
+
+function processClick() {
+  if (price.value > store.state.bank) {
+    return;
+  }
+
+  store.dispatch('decreaseBank', price.value);
+
+  emit('update', props.upgrade.name)
+}
+
+function processMouseOver(e) {
+  descriptionElement.value.style.display = 'block';
+  descriptionElement.value.style.top = e.target.getBoundingClientRect().y + 'px';
+  descriptionElement.value.style.right = '355px';
+}
+
+function processMouseleave() {
+  descriptionElement.value.style.display = 'none';
+}
 </script>
 
 <style scoped>
 .wrapper {
-  width: 350px;
   margin-bottom: 1px;
-  position: relative;
 }
 
 .basic-upgrade {
   font-family: "Vollkorn SC", serif;
-  width: 345px;
+  width: 100%;
   height: 70px;
-  position: relative;
   z-index: 1;
   cursor: pointer;
   background-color: #fbeee0;
@@ -122,18 +151,13 @@ const isHidden = computed(() => store.state.totalBank < props.upgrade.price);
 .description {
   display: none;
   position: absolute;
-  right: 100%;
-  top: 10px;
-  width: 200px;
+  width: 300px;
   padding: 10px;
   border: 1px solid;
   z-index: 2;
   background-color: white;
   margin-right: 10px;
-}
-
-.wrapper:hover .description {
-  display: block;
+  font-size: 13px;
 }
 
 .image-wrapper {
