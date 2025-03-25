@@ -100,7 +100,7 @@ function processClick() {
 
   store.dispatch('decreaseBank', price.value);
 
-  emit('update', props.upgrade.name)
+  emit('update', props.upgrade.name);
 }
 
 function processMouseOver(e) {

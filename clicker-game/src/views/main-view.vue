@@ -21,10 +21,14 @@
       />
     </div>
 
-    <AchievementsContainer
+    <!-- <AchievementsContainer
       :upgrades="userUpgrades"
       :click-value="clickValue"
       :autoclick-value="autoclickValue"
+    /> -->
+
+    <tabsWrapper
+      :achievementsProps="achievementsProps"
     />
 
     <div class="upgrades">
@@ -48,18 +52,25 @@ import MainClicker from '@/components/main-clicker.vue';
 import BankComponent from '@/components/bank-component.vue';
 import BasicUpgrade from '@/components/basic-upgrade.vue';
 import RandomGift from '@/components/random-gift.vue';
-import AchievementsContainer from './achievements/achievements-container.vue';
 import StatisticsView from './statistics-view.vue';
 import TimerComponent from '@/components/timer-component.vue';
 import { UPGRADES_LIST } from '@/data/upgrades';
-
 import { useStore } from 'vuex';
+import tabsWrapper from '@/components/tabs-wrapper.vue';
 
 const store = useStore();
 
 const totalClicks = ref(0);
 const userUpgrades = ref(new Map());
 const activeGifts = ref([]);
+
+const achievementsProps = computed(() => {
+  return {
+      upgrades: userUpgrades.value,
+      clickValue: clickValue.value,
+      autoclickValue: autoclickValue.value,
+  }
+});
 
 const clickValue = computed(() => {
   let increment = 1;
@@ -102,7 +113,7 @@ function getUpgradeAmount(name) {
   return userUpgrades.value.get(name);
 }
 
-onMounted(() => {
+onMounted(async () => {
   for (let upgrade of UPGRADES_LIST) {
     userUpgrades.value.set(upgrade.name, 0);
   }
