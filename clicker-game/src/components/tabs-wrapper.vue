@@ -1,50 +1,48 @@
 <template>
-  <div class="tabs">
-    <div class="headers">
-      <template
+  <v-card
+    class="tabs-wrapper"
+    variant="tonal"
+  >
+    <v-tabs v-model="tab">
+      <v-tooltip
         v-for="tab of tabs"
-        :key="tab"
+        :key="tab.name"
+        :text="tab.description"
+        location="bottom"
       >
-        <div
-          class="header"
-          :class="{ active: tab.isActive }"
-          @click="toggleTab(tab)"
-        >
-          <component
-            :is="tab.icon"
-            :color="'#422800'"
-            :size="28"
-          ></component>
-        </div>
-      </template>
-    </div>
+        <template v-slot:activator="{ props }">
+          <v-tab
+            v-bind="props"
+            >
+              <v-icon
+                :icon="tab.icon"
+              >
+              </v-icon>
+          </v-tab>
+        </template>
+      </v-tooltip>
+    </v-tabs>
 
-    <div class="tabs-wrapper">
-      <template
+    <v-card-text>
+      <v-tabs-window v-model="tab">
+        <v-tabs-window-item
         v-for="tab of tabs"
-        :key="tab"
+        :key="tab.name"
+        :value="tab.name"
       >
-        <div
-          class="tab"
-          :class="{ active: tab.isActive }"
-        >
-          <h3>
-            {{ tab.description }}
-          </h3>
-          <component
-            :is="tab.component"
-            v-bind="tab.props"
-          ></component>
-        </div>
-      </template>
-    </div>
-  </div>
+        <component
+          :is="tab.component"
+          v-bind="tab.props"
+        ></component>
+      </v-tabs-window-item>
+      </v-tabs-window>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script setup>
 import { ref, defineProps } from 'vue';
 import achievementsContainer from '@/views/achievements/achievements-container.vue';
-import { Trophy, CircleUserRound } from 'lucide-vue-next';
 import userMain from './user/user-main.vue';
 
 const props = defineProps({
@@ -57,7 +55,7 @@ const tabs = ref([
   {
     name: 'achievements',
     component: achievementsContainer,
-    icon: Trophy,
+    icon: 'mdi-trophy-variant-outline',
     isActive: true,
     props: props.achievementsProps,
     description: 'Досягнення',
@@ -65,56 +63,20 @@ const tabs = ref([
   {
     name: 'user',
     component: userMain,
-    icon: CircleUserRound,
+    icon: 'mdi-account-circle',
     isActive: false,
     description: 'Профіль',
   },
 ]);
 
-function toggleTab(tabToToggle) {
-  if (!tabToToggle.isActive) {
-    for (let i = 0; i < tabs.value.length; i++) {
-      tabs.value[i].isActive = tabs.value[i].name === tabToToggle.name;
-    }
-  }
-}
+const tab = ref(null);
 </script>
 
 <style scoped>
-.tabs {
-  padding: 10px;
-}
-
 .tabs-wrapper {
   margin-top: -2px;
   height: calc(100% - 60px);
   width: calc(100vw - 750px);
-}
-
-.tab {
-  display: none;
-  border: 2px solid #000000;
-  height: 100%;
-}
-
-.tab.active {
-  display: block;
-}
-
-.headers {
-  display: flex;
-}
-
-.header {
-  height: 50px;
-  width: 50px;
-  border: 2px solid #000000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.header.active {
-  border-bottom: 2px solid #dfd9d3;
+  margin-right: 10px;
 }
 </style>

@@ -34,6 +34,12 @@
           </div>
         </div>
       </div>
+      <v-tooltip
+        activator="parent"
+        location="start"
+      >
+        {{ tooltipText }}
+      </v-tooltip>
     </button>
   </div>
   <div
@@ -56,16 +62,18 @@
           </div>
         </div>
       </div>
+      <v-tooltip
+        activator="parent"
+        location="start"
+      >
+        {{ tooltipBasicText }}
+      </v-tooltip>
     </button>
-  </div>
-
-  <div class="description" ref="descriptionElement">
-    {{ tooltipText }}
   </div>
 </template>
 
 <script setup>
-import { defineProps, computed, defineEmits, ref } from 'vue';
+import { defineProps, computed, defineEmits } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -91,7 +99,7 @@ const isHidden = computed(() => store.state.totalBank < props.upgrade.price);
 
 const price = computed(() => Math.round(props.upgrade.price * (props.amount === 0 ? 1 : props.amount * 1.1245563)));
 
-const descriptionElement = ref();
+const tooltipBasicText = 'Зароби більше монеток, щоб дізнатись що це';
 
 function processClick() {
   if (price.value > store.state.bank) {
@@ -101,16 +109,6 @@ function processClick() {
   store.dispatch('decreaseBank', price.value);
 
   emit('update', props.upgrade.name);
-}
-
-function processMouseOver(e) {
-  descriptionElement.value.style.display = 'block';
-  descriptionElement.value.style.top = e.target.getBoundingClientRect().y + 'px';
-  descriptionElement.value.style.right = '355px';
-}
-
-function processMouseleave() {
-  descriptionElement.value.style.display = 'none';
 }
 </script>
 
@@ -129,6 +127,7 @@ function processMouseleave() {
   border-radius: 5px;
   border: 2px solid #000000;
   padding: 2px;
+  font-size: 14px;
 }
 
 .content-wrapper {
@@ -146,18 +145,6 @@ function processMouseleave() {
 .basic-upgrade:disabled {
   cursor: auto;
   opacity: 0.5;
-}
-
-.description {
-  display: none;
-  position: absolute;
-  width: 300px;
-  padding: 10px;
-  border: 1px solid;
-  z-index: 2;
-  background-color: white;
-  margin-right: 10px;
-  font-size: 13px;
 }
 
 .image-wrapper {
