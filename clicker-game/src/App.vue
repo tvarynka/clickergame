@@ -1,5 +1,9 @@
 <template>
-  <MainView />
+  <v-app>
+    <v-main>
+      <MainView />
+    </v-main>
+  </v-app>
 </template>
 
 <script setup>
@@ -21,6 +25,9 @@ body {
   height: 100vh;
   width: calc(100vw - 17px);
   user-select: none;
+}
+
+.v-application {
   background-color: #dfd9d3;
 }
 

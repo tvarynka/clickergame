@@ -1,25 +1,39 @@
 <template>
-  <div class="wrapper">
-    <div ref="button" class="main-clicker" @click="animateClickValue">
-    </div>
+  <div
+    class="wrapper"
+    ref="wrapper"
+  >
+    <v-btn
+      class="main-clicker"
+      @click="processClick"
+    >
+      ЗАРОБИТИ
+    </v-btn>
   </div>
 </template>
 
 <script setup>
-import { defineProps, useTemplateRef } from 'vue';
+import { defineProps, useTemplateRef, defineEmits } from 'vue';
 
 const props = defineProps({
   clickValue: Number
 });
 
-const button = useTemplateRef('button');
+const emit = defineEmits(['clicked']);
+
+const wrapper = useTemplateRef('wrapper');
+
+function processClick() {
+  emit('clicked');
+  animateClickValue();
+}
 
 function animateClickValue() {
   let clickValueElement = document.createElement('div');
   clickValueElement.textContent = '+' + props.clickValue;
   clickValueElement.classList.add('click-value');
-  clickValueElement.style.left = Math.random() * 130 + 'px';
-  button.value.append(clickValueElement);
+  clickValueElement.style.left = Math.random() * 400 + 'px';
+  wrapper.value.append(clickValueElement);
   setTimeout(() => {
     clickValueElement.remove();
   }, 1000);
@@ -28,11 +42,12 @@ function animateClickValue() {
 
 <style scoped>
   .wrapper {
-    height: 200px;
     width: 400px;
+    height: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
   }
 
   .main-clicker {
@@ -42,12 +57,8 @@ function animateClickValue() {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    position: relative;
-    border-radius: 50%;
-    background-image: url("../assets/images/coin.svg");
-    background-repeat: no-repeat;
-    background-size: auto;
     transition: width 0.5s, height 0.5s;
+    border-radius: 50%;
   }
 
   .main-clicker:active {
@@ -80,7 +91,7 @@ function animateClickValue() {
 
   100% {
     opacity: 0;
-    bottom: 100px;
+    bottom: 150px;
     left: random(130);
   }
 }

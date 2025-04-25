@@ -3,7 +3,7 @@
     <div class="badge">
       <img
         class="image"
-        src="@/assets/images/gifts/coin.svg"
+        :src="require('@/assets/images/upgrades/coin.svg')"
       >
     </div>
     <div class="timer">

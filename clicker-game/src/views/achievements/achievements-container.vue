@@ -21,9 +21,6 @@ import AchievementItem from './achievement-item.vue';
 import { useStore } from 'vuex';
 
 const props = defineProps({
-  upgrades: {
-    type: Object
-  },
   clickValue: {
     type: Number,
   },
@@ -115,11 +112,11 @@ const achievements = ref([
 const achieved = computed(() => {
   let counter = 0;
 
-  for (let i = 0; i < achievements.value.length; i++) {
-    if (achievements.value[i].isAchieved) {
+  userAchievements.value.forEach((value) => {
+    if (value) {
       counter++;
     }
-  }
+  });
 
   return counter;
 });
@@ -128,11 +125,11 @@ watch(store.state, checkAchievements);
 watch(props, checkAchievements);
 
 function getUpgradeAmountByName(upgradeName) {
-  return props.upgrades.get(upgradeName);
+  return store.state.userUpgrades.get(upgradeName);
 }
 
 function allAmountsAreBiggerThen(amount) {
-  for (let upgrade of props.upgrades) {
+  for (let upgrade of store.state.userUpgrades) {
     if (upgrade[1] < amount) {
       return false;
     }
@@ -167,7 +164,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.container {
-  width: calc(100vw - 750px);
-}
 </style>

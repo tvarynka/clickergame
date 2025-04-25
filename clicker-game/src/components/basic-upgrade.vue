@@ -27,13 +27,19 @@
         </div>
         <div class="right-column">
           <div class="price">
-            Вартість: {{ price }}
+            Вартість: {{ scientific.format(price, 2, 0) }}
           </div>
           <div class="amount">
             Куплено: {{ props.amount }}
           </div>
         </div>
       </div>
+      <v-tooltip
+        activator="parent"
+        location="start"
+      >
+        {{ tooltipText }}
+      </v-tooltip>
     </button>
   </div>
   <div
@@ -56,17 +62,22 @@
           </div>
         </div>
       </div>
+      <v-tooltip
+        activator="parent"
+        location="start"
+      >
+        {{ tooltipBasicText }}
+      </v-tooltip>
     </button>
-  </div>
-
-  <div class="description" ref="descriptionElement">
-    {{ tooltipText }}
   </div>
 </template>
 
 <script setup>
-import { defineProps, computed, defineEmits, ref } from 'vue';
+import { defineProps, computed, defineEmits } from 'vue';
 import { useStore } from 'vuex';
+import * as ADNotations from "@antimatter-dimensions/notations";
+
+const scientific = new ADNotations.MixedScientificNotation();
 
 const store = useStore();
 
@@ -81,17 +92,17 @@ const props = defineProps({
 
 const emit = defineEmits(['update']);
 
-const description = computed(() => `Монет за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'}: ${props.amount * props.upgrade.multiplier}`);
+const description = computed(() => `Монет за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'}: ${scientific.format(props.amount * props.upgrade.multiplier, 2, 0)}`);
 
 const tooltipText = computed(() => `${props.upgrade.description}. Збільшує дохід за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'} на ${props.upgrade.multiplier}`);
 
-const available = computed(() => store.state.bank >= props.upgrade.price);
+const available = computed(() => store.state.bank >= price.value);
 
 const isHidden = computed(() => store.state.totalBank < props.upgrade.price);
 
 const price = computed(() => Math.round(props.upgrade.price * (props.amount === 0 ? 1 : props.amount * 1.1245563)));
 
-const descriptionElement = ref();
+const tooltipBasicText = 'Зароби більше монеток, щоб дізнатись що це';
 
 function processClick() {
   if (price.value > store.state.bank) {
@@ -100,23 +111,14 @@ function processClick() {
 
   store.dispatch('decreaseBank', price.value);
 
-  emit('update', props.upgrade.name)
-}
-
-function processMouseOver(e) {
-  descriptionElement.value.style.display = 'block';
-  descriptionElement.value.style.top = e.target.getBoundingClientRect().y + 'px';
-  descriptionElement.value.style.right = '355px';
-}
-
-function processMouseleave() {
-  descriptionElement.value.style.display = 'none';
+  emit('update', props.upgrade.name);
 }
 </script>
 
 <style scoped>
 .wrapper {
-  margin-bottom: 1px;
+  margin-bottom: 5px;
+  width: 48%;
 }
 
 .basic-upgrade {
@@ -129,6 +131,7 @@ function processMouseleave() {
   border-radius: 5px;
   border: 2px solid #000000;
   padding: 2px;
+  font-size: 14px;
 }
 
 .content-wrapper {
@@ -146,18 +149,6 @@ function processMouseleave() {
 .basic-upgrade:disabled {
   cursor: auto;
   opacity: 0.5;
-}
-
-.description {
-  display: none;
-  position: absolute;
-  width: 300px;
-  padding: 10px;
-  border: 1px solid;
-  z-index: 2;
-  background-color: white;
-  margin-right: 10px;
-  font-size: 13px;
 }
 
 .image-wrapper {

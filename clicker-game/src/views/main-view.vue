@@ -13,7 +13,7 @@
         </template>
       </div>
       <BankComponent />
-      <MainClicker @click="updateBankOnClick" :click-value="clickValue" />
+      <MainClicker @clicked="updateBankOnClick" :click-value="clickValue" />
       <StatisticsView
         :total-clicks="totalClicks"
         :click-value="clickValue"
@@ -21,22 +21,9 @@
       />
     </div>
 
-    <AchievementsContainer
-      :upgrades="userUpgrades"
-      :click-value="clickValue"
-      :autoclick-value="autoclickValue"
+    <tabsWrapper
+      :achievementsProps="achievementsProps"
     />
-
-    <div class="upgrades">
-      <template :key="upgrade.name" v-for="upgrade of UPGRADES_LIST">
-        <BasicUpgrade
-          :upgrade="upgrade"
-          :amount="getUpgradeAmount(upgrade.name)"
-          @update="updateUpgrade"
-        />
-      </template>
-      
-    </div>
 
     <RandomGift @input="(value) => activeGifts = value" />
   </div>
@@ -46,27 +33,31 @@
 import { ref, computed, onMounted } from 'vue';
 import MainClicker from '@/components/main-clicker.vue';
 import BankComponent from '@/components/bank-component.vue';
-import BasicUpgrade from '@/components/basic-upgrade.vue';
 import RandomGift from '@/components/random-gift.vue';
-import AchievementsContainer from './achievements/achievements-container.vue';
 import StatisticsView from './statistics-view.vue';
 import TimerComponent from '@/components/timer-component.vue';
 import { UPGRADES_LIST } from '@/data/upgrades';
-
 import { useStore } from 'vuex';
+import tabsWrapper from '@/components/tabs-wrapper.vue';
 
 const store = useStore();
 
 const totalClicks = ref(0);
-const userUpgrades = ref(new Map());
 const activeGifts = ref([]);
+
+const achievementsProps = computed(() => {
+  return {
+      clickValue: clickValue.value,
+      autoclickValue: autoclickValue.value,
+  }
+});
 
 const clickValue = computed(() => {
   let increment = 1;
 
   for (let i = 0; i < UPGRADES_LIST.length; i++) {
     if (UPGRADES_LIST[i].type === 'manual') {
-      increment += userUpgrades.value.get(UPGRADES_LIST[i].name) * UPGRADES_LIST[i].multiplier;
+      increment += store.state.userUpgrades.get(UPGRADES_LIST[i].name) * UPGRADES_LIST[i].multiplier;
     }
   }
 
@@ -80,7 +71,7 @@ const autoclickValue = computed(() => {
 
   for (let i = 0; i < UPGRADES_LIST.length; i++) {
     if (UPGRADES_LIST[i].type === 'auto') {
-      increment += userUpgrades.value.get(UPGRADES_LIST[i].name) * UPGRADES_LIST[i].multiplier;
+      increment += store.state.userUpgrades.get(UPGRADES_LIST[i].name) * UPGRADES_LIST[i].multiplier;
     }
   }
 
@@ -94,18 +85,9 @@ function updateBankOnClick() {
   totalClicks.value++;
 }
 
-function updateUpgrade(name) {
-  userUpgrades.value.set(name, userUpgrades.value.get(name) + 1);
-}
-
-function getUpgradeAmount(name) {
-  return userUpgrades.value.get(name);
-}
-
-onMounted(() => {
-  for (let upgrade of UPGRADES_LIST) {
-    userUpgrades.value.set(upgrade.name, 0);
-  }
+onMounted(async () => {
+  // send here fetched from server values
+  store.dispatch('setInitialUserUpgrades');
 
   setInterval(() => {
     store.dispatch('increaseBank', autoclickValue.value);
@@ -127,12 +109,6 @@ onMounted(() => {
     width: 400px;
     position: relative;
     padding-top: 30px;
-  }
-
-  .upgrades {
-    width: 350px;
-    max-height: 100vh;
-    overflow: auto;
   }
 
   .timer-wrapper {
