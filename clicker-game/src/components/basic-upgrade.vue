@@ -27,7 +27,7 @@
         </div>
         <div class="right-column">
           <div class="price">
-            Вартість: {{ price }}
+            Вартість: {{ scientific.format(price, 2, 0) }}
           </div>
           <div class="amount">
             Куплено: {{ props.amount }}
@@ -75,6 +75,9 @@
 <script setup>
 import { defineProps, computed, defineEmits } from 'vue';
 import { useStore } from 'vuex';
+import * as ADNotations from "@antimatter-dimensions/notations";
+
+const scientific = new ADNotations.MixedScientificNotation();
 
 const store = useStore();
 
@@ -89,11 +92,11 @@ const props = defineProps({
 
 const emit = defineEmits(['update']);
 
-const description = computed(() => `Монет за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'}: ${props.amount * props.upgrade.multiplier}`);
+const description = computed(() => `Монет за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'}: ${scientific.format(props.amount * props.upgrade.multiplier, 2, 0)}`);
 
 const tooltipText = computed(() => `${props.upgrade.description}. Збільшує дохід за ${props.upgrade.type === 'manual' ? 'клік' : 'секунду'} на ${props.upgrade.multiplier}`);
 
-const available = computed(() => store.state.bank >= props.upgrade.price);
+const available = computed(() => store.state.bank >= price.value);
 
 const isHidden = computed(() => store.state.totalBank < props.upgrade.price);
 
@@ -114,7 +117,8 @@ function processClick() {
 
 <style scoped>
 .wrapper {
-  margin-bottom: 1px;
+  margin-bottom: 5px;
+  width: 48%;
 }
 
 .basic-upgrade {

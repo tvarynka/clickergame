@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import { UPGRADES_LIST } from '@/data/upgrades';
 
 export default createStore({
   state: {
@@ -6,6 +7,7 @@ export default createStore({
     bank: 0,
     clickBonus: 1,
     autoClickBonus: 1,
+    userUpgrades: new Map(),
   },
   getters: {
     bank(state) {
@@ -19,6 +21,9 @@ export default createStore({
     },
     autoClickBonus(state) {
       return state.autoClickBonus;
+    },
+    userUpgrades(state) {
+      return state.userUpgrades;
     },
   },
   mutations: {
@@ -37,6 +42,9 @@ export default createStore({
     changeAutoclickBonus(state, amount) {
       state.autoClickBonus = amount;
     },
+    changeUserUpgrades(state, userUpgrades) {
+      state.userUpgrades = userUpgrades;
+    },
   },
   actions: {
     increaseBank(context, amount) {
@@ -51,6 +59,21 @@ export default createStore({
     },
     changeAutoclickBonusAction(context, amount) {
       context.commit('changeAutoclickBonus', amount);
+    },
+    updateUserUpgrade({ commit, state }, name) {
+      let userUpgrades = state.userUpgrades;
+      userUpgrades.set(name, userUpgrades.get(name) + 1);
+      commit('changeUserUpgrades', userUpgrades);
+    },
+    setInitialUserUpgrades({ commit }) {
+      let userUpgrades = new Map();
+
+      // change to value fetched from server
+      for (let upgrade of UPGRADES_LIST) {
+        userUpgrades.set(upgrade.name, 0);
+      }
+
+      commit('changeUserUpgrades', userUpgrades);
     },
   },
 });

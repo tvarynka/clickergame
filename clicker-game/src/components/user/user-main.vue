@@ -1,6 +1,6 @@
 <template>
   <div v-if="isLoggedIn">
-    Logged in
+    <UserLogged />
   </div>
   <div v-else>
     <UserLogin v-if="isRegistered" @logged-in="loggedIn" />
@@ -20,6 +20,7 @@ import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import UserLogin from './user-login.vue';
 import UserRegister from './user-register.vue';
+import UserLogged from './user-logged.vue';
 
 const isLoggedIn = ref(false);
 const isRegistered = ref(true);

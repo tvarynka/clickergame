@@ -43,7 +43,8 @@
 <script setup>
 import { ref, defineProps } from 'vue';
 import achievementsContainer from '@/views/achievements/achievements-container.vue';
-import userMain from './user/user-main.vue';
+//import userMain from './user/user-main.vue';
+import upgradesView from './upgrades-view';
 
 const props = defineProps({
   achievementsProps: {
@@ -51,7 +52,14 @@ const props = defineProps({
   },
 });
 
-const tabs = ref([
+const tabs = [
+  {
+    name: 'upgrades',
+    component: upgradesView,
+    icon: 'mdi-castle',
+    isActive: false,
+    description: 'Місто',
+  },
   {
     name: 'achievements',
     component: achievementsContainer,
@@ -60,14 +68,14 @@ const tabs = ref([
     props: props.achievementsProps,
     description: 'Досягнення',
   },
-  {
-    name: 'user',
-    component: userMain,
-    icon: 'mdi-account-circle',
-    isActive: false,
-    description: 'Профіль',
-  },
-]);
+  // {
+  //   name: 'user',
+  //   component: userMain,
+  //   icon: 'mdi-account-circle',
+  //   isActive: false,
+  //   description: 'Профіль',
+  // },
+];
 
 const tab = ref(null);
 </script>
@@ -76,7 +84,7 @@ const tab = ref(null);
 .tabs-wrapper {
   margin-top: -2px;
   height: calc(100% - 60px);
-  width: calc(100vw - 750px);
+  width: calc(100vw - 400px);
   margin-right: 10px;
 }
 </style>
